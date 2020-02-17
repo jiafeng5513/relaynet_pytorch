@@ -1,6 +1,4 @@
-
 networks/classifiers/__pycache__/
-
 *.pyc
-
 \.idea/
+.vscode

@@ -1,6 +1,5 @@
-<p align="center">relaynet_pytorch</p>
-=======
-
+relaynet_pytorch
+==============
 
 #### 声明
 1. fork from [ai-med](https://github.com/shayansiddiqui),[Shayan Siddiqui's Home Page](https://github.com/shayansiddiqui)<br>
@@ -9,7 +8,7 @@
 4. [Paper Link](https://arxiv.org/abs/1704.02161).<br>
 5. 其他分支:[Atomwh](https://github.com/Atomwh/relaynet_pytorch),[simasima121](https://github.com/simasima121/relaynet_pytorch).<br>
 #### Model
-<p align="center"><img src="doc/model.png" width = "400" alt="图片名称"></p>
+<p align="center"><img src="doc/model.png" width = "600" alt="图片名称"></p>
 
 #### 数据
 1. 数据集下载链接:[Duke University](http://people.duke.edu/~sf59/Chiu_BOE_2014_dataset.htm)
@@ -26,6 +25,6 @@
 
 #### 效果
 <p align="center">
-<img src="doc/img.png" width = "200" alt="图片名称">  <img src="doc/pred.png" width = "200" alt="图片名称">
+<img src="doc/img.png" width = "300" alt="图片名称">  <img src="doc/pred.png" width = "300" alt="图片名称">
 </p>
 
