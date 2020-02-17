@@ -47,11 +47,12 @@ def get_imdb_data():
     set = list(set[a_group_key])
     set = np.squeeze(np.asarray(set))
 
-    sz = Data.shape
-    Data = Data.reshape([sz[0], 1, sz[1], sz[2]])
-    Data = Data[:, :, 61:573, :]
-    weights = Label[:, 1, 61:573, :]
-    Label = Label[:, 0, 61:573, :]
+    sz = Data.shape                                 # [496,768,N]
+    Data = Data.reshape([sz[0], 1, sz[1], sz[2]])   # [496,1,768,N]
+    Data = Data[:, :, 61:573, :]                    # [496,1,512,N]  注:从这里可以看出,label的大小是:[496,2,512,N]
+    weights = Label[:, 1, 61:573, :]                # [496,1,512,N]
+    Label = Label[:, 0, 61:573, :]                  # [496,1,512,N]
+    
     sz = Label.shape
     Label = Label.reshape([sz[0], 1, sz[1], sz[2]])
     weights = weights.reshape([sz[0], 1, sz[1], sz[2]])

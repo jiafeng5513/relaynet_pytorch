@@ -1,3 +1,6 @@
+# viewer of 2015_BOE_Chiu_Analyzer
+# data can be download from : http://people.duke.edu/~sf59/Chiu_BOE_2014_dataset.htm
+# there are 10 Subject_*.mat files in the zip
 import scipy.io as scio
 import numpy as np
 import cv2
