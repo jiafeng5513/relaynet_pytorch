@@ -10,11 +10,10 @@ filenames = ['./Subject_01.mat','./Subject_02.mat','./Subject_03.mat','./Subject
             './Subject_05.mat','./Subject_06.mat','./Subject_07.mat','./Subject_08.mat',
             './Subject_09.mat','./Subject_10.mat']
 
-
 color = [[0, 0, 255], [0, 255, 0], [111, 145, 138], [0, 153, 255],
          [0, 255, 255], [107, 162, 94], [255, 255, 0], [255, 0, 0]]
 
-window_name = 'duke_2015_BOE_Chiu'
+window_name = 'duke_2015_BOE_Chiu,double hit for export'
 
 
 class data_processer:
@@ -38,8 +37,7 @@ class data_processer:
         self.manualLayers2 = data['manualLayers2']  # (8, 768, 61)
         self.num_of_images = self.images.shape[2]
 
-
-    def show_layers(self):
+    def show_layers(self, will_export=False):
         img = self.images[:, :, self.SLICE_INDEX]
         img_bgr = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
         layers = [self.automaticLayersDME[:, :, self.SLICE_INDEX], self.automaticLayersNormal[:, :, self.SLICE_INDEX],
@@ -102,8 +100,11 @@ class data_processer:
         self.show_layers()
         pass
 
-    def onChange_export(self,object):
-
+    def onMouse(self, event, x, y, flags, params):
+        if event is cv2.EVENT_LBUTTONDBLCLK:
+            # 导出当前图片
+            self.show_layers(True)
+            pass
         pass
 
     def viewer(self):
@@ -115,8 +116,7 @@ class data_processer:
         cv2.createTrackbar('HUD', window_name, 0, 1, self.onTrackbarMove)
         cv2.setTrackbarPos('HUD', window_name, 1)
         cv2.createTrackbar('file_index', window_name, 0, 9, self.onTrackbarMove_changefile)
-        # buttonName, onChange, userData=None, buttonType=None, initialButtonState=None
-
+        cv2.setMouseCallback(window_name, self.onMouse)
         self.show_layers()
         cv2.waitKey(0)
         cv2.destroyWindow(window_name)
@@ -128,3 +128,9 @@ if __name__ == '__main__':
     processer = data_processer()
     processer.viewer()
     pass
+# 1.编程,挑选出110张有标记的图片,并将图片和标签的两侧无关区域进行裁剪
+# 2.存储原始数据并进行编号,要保存好每一张图的来源,即文件名和slice number
+# 3.对每一张slice导出一张边缘图,用RGB格式,边缘的颜色要取好
+# 4.用其他软件手动标记这张边缘图
+# 5.读取手动标记的图片,还原成二值标签
+# 6.转储成h5py文件
