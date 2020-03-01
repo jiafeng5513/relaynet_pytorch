@@ -1,10 +1,15 @@
-# viewer of 2015_BOE_Chiu_Analyzer
-# data can be download from : http://people.duke.edu/~sf59/Chiu_BOE_2014_dataset.htm
-# there are 10 Subject_*.mat files in the zip
+"""
+通过2015_BOE_Chiu数据集生成本文所需的训练数据
+取人工分层标记,做B样条插值
+"""
 import scipy.io as scio
 import numpy as np
 import cv2
 import math
+import pylab as pl
+from scipy import interpolate
+import matplotlib.pyplot as plt
+
 
 filenames = ['./Subject_01.mat','./Subject_02.mat','./Subject_03.mat','./Subject_04.mat',
             './Subject_05.mat','./Subject_06.mat','./Subject_07.mat','./Subject_08.mat',
@@ -13,8 +18,7 @@ filenames = ['./Subject_01.mat','./Subject_02.mat','./Subject_03.mat','./Subject
 color = [[0, 0, 255], [0, 255, 0], [111, 145, 138], [0, 153, 255],
          [0, 255, 255], [107, 162, 94], [255, 255, 0], [255, 0, 0]]
 
-window_name = 'duke_2015_BOE_Chiu,double hit for export'
-
+window_name = 'duke_2015_BOE_Chiu'
 
 class data_processer:
     def __init__(self):
@@ -58,22 +62,41 @@ class data_processer:
 
         mask_bgr = cv2.bitwise_and(bgr_temp, bgr_temp, mask=fluid_mask)
         img_bgr = img_bgr + mask_bgr
+        # 横轴为x,纵轴为y
 
-        label_set = []
-        range_text = ''
-        for j in range(768):
-            for t in range(8):
-                if not math.isnan(layer[t][j]):
+        layer_text = ''
+
+        for t in range(8):   # 对当前这张图,检索8条分层标记
+            x_set = []
+            y_set = []
+            for j in range(768):  # 对于每条分层标记,按照x坐标遍历
+                if not math.isnan(layer[t][j]):  # 如果第t条分层标记的j位置不为NaN,则此处存储的是这个标记点的y坐标
                     i = int(layer[t][j])
-                    # 给img[i][j]上t色
-                    img_bgr.itemset((i, j, 0), color[t][0])
-                    img_bgr.itemset((i, j, 1), color[t][1])
-                    img_bgr.itemset((i, j, 2), color[t][2])
-                    label_set.append(j)
-                    range_text = 'layer x: [' + str(min(label_set)) + ',' + str(max(label_set)) + ']'
+                    x_set.append(j)
+                    y_set.append(i)
+            # 非空判断
+            if len(x_set) > 0 and len(y_set) > 0:
+                # 如果x_set的长度不足,则分层线有断开的地方,需要插值
+                if max(x_set)-min(x_set)+1>len(x_set):
+                    # 先创建新的x坐标集合
+                    x_new = np.arange(min(x_set), max(x_set)+1, 1)
+                    tck = interpolate.splrep(x_set, y_set)
+                    y_new = interpolate.splev(x_new, tck)
+                    x_set = x_new
+                    y_set = y_new
+                    layer_text = '* bspline '
+                # 此处得到了一条连续的分层线,画到图片上
+                for index in range(len(x_set)):
+                    img_bgr.itemset((int(y_set[index]), x_set[index], 0), color[t][0])
+                    img_bgr.itemset((int(y_set[index]), x_set[index], 1), color[t][1])
+                    img_bgr.itemset((int(y_set[index]), x_set[index], 2), color[t][2])
+        #layer_text = layer_text + 'layer x: [' + str(min(x_set)) + ',' + str(max(x_set)) + ']'
+
+
+
         if self.HUD_SWITCH:
             HUD_text_0 = 'file : ' + filenames[self.FILE_INDEX] + ' slice number : ' + str(self.SLICE_INDEX)
-            HUD_text_1 = 'layer label : ' + layers_name[self.LAYER_ID] + ' ' + range_text
+            HUD_text_1 = 'layer label : ' + layers_name[self.LAYER_ID] + ' ' + layer_text
             HUD_text_2 = 'fluid label : ' + fluid_masks_name[self.FLUID_ID]
             img_bgr = cv2.putText(img_bgr, HUD_text_0, (50, img_bgr.shape[0] - 75), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
                                   (0, 0, 255), 1)
@@ -121,8 +144,6 @@ class data_processer:
         cv2.waitKey(0)
         cv2.destroyWindow(window_name)
         pass
-
-
 
 if __name__ == '__main__':
     processer = data_processer()
