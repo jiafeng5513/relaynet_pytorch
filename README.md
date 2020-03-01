@@ -28,3 +28,7 @@ relaynet_pytorch
 <img src="doc/img.png" width = "300" alt="图片名称">  <img src="doc/pred.png" width = "300" alt="图片名称">
 </p>
 
+#### debug log
+1. ERROR in torch.load : `ImportError: No module named networks`<br>
+    refactor: relaynet_pytorch ->networks
+2. 

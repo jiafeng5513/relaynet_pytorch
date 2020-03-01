@@ -5,17 +5,17 @@ import torch.nn as nn
 
 class BasicBlock(nn.Module):
     '''
-    param ={
+param ={
         'num_channels':1,
         'num_filters':64,
-        'kernel_h':7,
-        'kernel_w':3,
+        'kernel_h':3,
+        'kernel_w':7,
+        'kernel_c': 1,
         'stride_conv':1,
         'pool':2,
         'stride_pool':2,
-        'num_classes':10
+        'num_class':9
     }
-
     '''
 
     def __init__(self, params):

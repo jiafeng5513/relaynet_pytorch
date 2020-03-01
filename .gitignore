@@ -3,6 +3,8 @@ networks/classifiers/__pycache__/
 \.idea/
 \.vscode
 *.mat
+*.hdf5
+*.h5
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
